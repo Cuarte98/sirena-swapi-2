@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter as Router } from "react-router";
+import { BrowserRouter } from "react-router-dom";
+import { Switch, Route } from "react-router";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import fetchActions from "./actions/fetch";
+import TopBar from "./components/TopBar";
 import SearchView from "./views/SearchView";
+import DetailsView from "./views/DetailsView";
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -18,9 +22,11 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+const api = "https://swapi.co/api/";
+
 const App = ({ fetchData, fetchDataSuccess, fetchDataError }) => {
   const fetchAPIData = (id) => {
-    fetch(`https://swapi.co/api/${id}`)
+    fetch(api + id)
       .then((response) => {
         fetchData(id);
         console.log(response);
@@ -40,22 +46,26 @@ const App = ({ fetchData, fetchDataSuccess, fetchDataError }) => {
       });
   };
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    fetchAPIData("people");
-    fetchAPIData("films");
+    /* fetchAPIData("people");
+    fetchAPIData("films"); */
   }, []);
 
   return (
-    <div>{!isLoading ? <SearchView /> : <div> Select from menu </div>}</div>
+    <BrowserRouter>
+      <TopBar />
+      <Switch>
+        {!isLoading ? (
+          <Route path="/" component={SearchView} exact />
+        ) : (
+          <CircularProgress />
+        )}
+        <Route path="/details/people/:id" component={DetailsView} exact />
+      </Switch>
+    </BrowserRouter>
   );
 };
 
-const RoutedApp = () => (
-  <Router>
-    <App />
-  </Router>
-);
-
-export default connect(null, mapDispatchToProps)(RoutedApp);
+export default connect(null, mapDispatchToProps)(App);
