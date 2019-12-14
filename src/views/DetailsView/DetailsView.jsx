@@ -1,21 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
+import capitalize from "lodash/capitalize";
+import replace from "lodash/replace";
 
-const DetailsView = () => {
+const DetailsView = ({ url = "https://swapi.co/api/people/54/" }) => {
+  const [info, setInfo] = useState({});
+
+  useEffect(() => {
+    fetch(url)
+      .then((response) => response.json())
+      .then(async (response) => {
+        setInfo({
+          ...response,
+        });
+      });
+  }, [url]);
+
+  const renderItems = () => {
+    const keys = Object.keys(info);
+
+    return keys.map((key) => {
+      return (
+        <ListItem>
+          <ListItemText
+            primary={replace(capitalize(key), "_", " ")}
+            secondary={info[key]}
+          />
+        </ListItem>
+      );
+    });
+  };
+
   return (
     <div>
-      <Typography variant="h6">Nombre: R2D2</Typography>
-      <List dense>
-        <ListItem>
-          <ListItemText primary="Año de nacimiento" secondary="19 BBY" />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary="Color de ojos" secondary="Blue" />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary="Color de pelo" secondary="Blond" />
-        </ListItem>
-      </List>
+      <Typography variant="h6">Nombre: {info.name}</Typography>
+      <List dense>{renderItems()}</List>
     </div>
   );
 };
