@@ -1,20 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  CircularProgress,
+  Container,
+} from "@material-ui/core";
 import capitalize from "lodash/capitalize";
 import replace from "lodash/replace";
 
-const DetailsView = ({ url = "https://swapi.co/api/people/54/" }) => {
+const DetailsView = (props) => {
   const [info, setInfo] = useState({});
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    fetch(url)
+    fetch("https://swapi.co/api/people/" + props.match.params.id)
       .then((response) => response.json())
-      .then(async (response) => {
-        setInfo({
-          ...response,
-        });
-      });
-  }, [url]);
+      .then(
+        async ({
+          name,
+          height,
+          mass,
+          hair_color,
+          skin_color,
+          eye_color,
+          birth_year,
+          gender,
+        }) => {
+          setInfo({
+            name,
+            height,
+            mass,
+            hair_color,
+            skin_color,
+            eye_color,
+            birth_year,
+            gender,
+          });
+          setIsLoading(false);
+        }
+      );
+  }, [props.match.params.id]);
 
   const renderItems = () => {
     const keys = Object.keys(info);
@@ -32,10 +58,16 @@ const DetailsView = ({ url = "https://swapi.co/api/people/54/" }) => {
   };
 
   return (
-    <div>
-      <Typography variant="h6">Nombre: {info.name}</Typography>
-      <List dense>{renderItems()}</List>
-    </div>
+    <Container>
+      {!isLoading ? (
+        <div>
+          <Typography variant="h6">{info.name}</Typography>
+          <List dense>{renderItems()}</List>
+        </div>
+      ) : (
+        <CircularProgress />
+      )}
+    </Container>
   );
 };
 

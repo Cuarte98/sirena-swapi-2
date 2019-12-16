@@ -12,7 +12,7 @@ const TopBar = () => {
         <IconButton edge="start" color="inherit" aria-label="menu">
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6">You can do it!</Typography>
+        <Typography variant="h6">Sirena Swapi</Typography>
       </Toolbar>
     </AppBar>
   );

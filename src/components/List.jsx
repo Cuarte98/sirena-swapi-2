@@ -10,8 +10,10 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 const ListView = ({ renderedList }) => {
   const renderItems = (data) => {
     return data.map((item, key) => {
+      const itemId = item.url.match(/\d+/)[0];
+      debugger;
       return (
-        <Link to={`/details/people/${key}`}>
+        <Link to={`/details/people/${itemId}`}>
           <ListItem button divider>
             <ListItemText primary={item.name} />
             <Icon edge="end" aria-label="delete">
